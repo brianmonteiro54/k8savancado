@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-small-a
+  namespace: aula07
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: demo-small-a }
+  template:
+    metadata:
+      labels: { app: demo-small-a }
+    spec:
+      containers:
+      - name: c
+        image: busybox:1.36
+        command: ["sh","-c","sleep 36000"]
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-small-b
+  namespace: aula07
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: demo-small-b }
+  template:
+    metadata:
+      labels: { app: demo-small-b }
+    spec:
+      containers:
+      - name: c
+        image: busybox:1.36
+        command: ["sh","-c","sleep 36000"]
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"

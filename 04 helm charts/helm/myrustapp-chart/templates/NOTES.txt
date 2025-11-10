@@ -1,0 +1,7 @@
+Thank you for installing {{ .Chart.Name }}!
+
+To access the service locally, run:
+
+  kubectl port-forward svc/{{ include "myrustapp.fullname" . }} 8080:{{ .Values.service.port }}
+
+Then visit: http://localhost:8080/

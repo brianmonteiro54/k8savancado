@@ -1,0 +1,19 @@
+# Modelo de Provisioner/NodePool (Karpenter) para usar com os plans gerados
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: aula07-template
+spec:
+  requirements:
+  - key: topology.kubernetes.io/zone
+    operator: In
+    values: ["us-east-1a","us-east-1b"]
+  - key: karpenter.sh/capacity-type
+    operator: In
+    values: ["spot","on-demand"]
+  limits:
+    resources:
+      cpu: "32000m"
+      memory: "64Gi"
+  consolidation:
+    enabled: true

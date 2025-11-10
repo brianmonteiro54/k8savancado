@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aula02
+  labels:
+    app.kubernetes.io/name: aula02
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: aula02-default-quota
+  namespace: aula02
+spec:
+  hard:
+    pods: "100"

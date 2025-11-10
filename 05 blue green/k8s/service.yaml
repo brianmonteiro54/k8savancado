@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bgimg
+  namespace: aula05
+spec:
+  selector:
+    app: bgimg
+    env: blue   # BLUE é o ativo inicialmente
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

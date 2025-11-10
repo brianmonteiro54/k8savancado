@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: keda-demo
+  labels:
+    app: worker
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker
+        image: keda-demo/worker:local
+        imagePullPolicy: Never
+        env:
+        - name: AMQP_ADDR
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-secret
+              key: connection
+        - name: QUEUE
+          value: "orders"
+        - name: PREFETCH
+          value: "10"
+        - name: PROCESS_MS
+          value: "100"
+        ports:
+        - name: http
+          containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 2
+          periodSeconds: 5

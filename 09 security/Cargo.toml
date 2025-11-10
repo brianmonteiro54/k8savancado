@@ -1,0 +1,19 @@
+[workspace]
+members = ["crates/orchestrator", "crates/service-a"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+authors = ["Aulas FIAP - Ricardo Cataldi - Demo"]
+
+[workspace.dependencies]
+anyhow = "1"
+tokio = { version = "1.39", features = ["macros", "rt-multi-thread"] }
+kube = { version = "0.87", features = ["runtime", "derive"] }
+k8s-openapi = { version = "0.22", features = ["v1_27"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+clap = { version = "4", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }

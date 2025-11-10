@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: myapp
+  labels: { app: myapp }
+spec:
+  replicas: 10
+  revisionHistoryLimit: 10
+  strategy:
+    canary:
+      maxUnavailable: "0%"
+      maxSurge: "10%"
+      canaryService: myapp-canary
+      stableService: myapp-stable
+      steps:
+        - setCanaryScale:
+            matchTrafficWeight: true
+        - setWeight: 5
+        - pause: { duration: 30s }
+        - setWeight: 20
+        - pause: { duration: 30s }
+        - setWeight: 50
+        - pause: { duration: 30s }
+        - setWeight: 100
+        - pause: { duration: 15s }
+  selector:
+    matchLabels: { app: myapp }
+  template:
+    metadata:
+      labels: { app: myapp }
+    spec:
+      containers:
+        - name: myapp
+          image: myorg/myapp:1.0.0
+          env:
+            - name: APP_VERSION
+              value: "1.0.0"
+            - name: PORT
+              value: "8080"
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet: { path: /readyz, port: 8080 }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            initialDelaySeconds: 5
+            periodSeconds: 5

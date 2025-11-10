@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "replicaCount": { "type": "integer", "minimum": 1 },
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "tag": { "type": "string", "minLength": 1 },
+        "pullPolicy": { "type": "string" }
+      },
+      "required": ["repository", "tag"]
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "port": { "type": "integer", "minimum": 1 },
+        "containerPort": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["type", "port", "containerPort"]
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "greeting": { "type": "string" }
+      }
+    }
+  },
+  "required": ["replicaCount", "image", "service"]
+}

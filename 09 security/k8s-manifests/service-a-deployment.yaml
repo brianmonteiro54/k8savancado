@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a
+  namespace: default
+  labels: { app: service-a }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: service-a }
+  template:
+    metadata:
+      labels: { app: service-a }
+    spec:
+      containers:
+        - name: service-a
+          image: service-a:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8443
+          env:
+            - name: POD_NAME
+              valueFrom: { fieldRef: { fieldPath: metadata.name } }
+          volumeMounts:
+            - name: tls
+              mountPath: /tls
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: service-a-tls

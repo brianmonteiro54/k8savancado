@@ -1,0 +1,7 @@
+# Overrides para DEV
+replicaCount: 1
+image:
+  repository: myrustapp
+  tag: "1.0.0"
+service:
+  type: ClusterIP

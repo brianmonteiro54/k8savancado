@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-health-demo
+  namespace: app-health-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-health-demo
+  template:
+    metadata:
+      labels:
+        app: app-health-demo
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      terminationGracePeriodSeconds: 20
+      containers:
+        - name: server
+          image: app-health-demo:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: RUST_LOG
+              value: "info"
+            - name: STARTUP_DELAY_MS
+              value: "3000"
+            - name: READY_AFTER_MS
+              value: "5000"
+          startupProbe:
+            httpGet: { path: /health/startup, port: 8080 }
+            periodSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            httpGet: { path: /health/ready, port: 8080 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 2
+          livenessProbe:
+            httpGet: { path: /health/live, port: 8080 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"

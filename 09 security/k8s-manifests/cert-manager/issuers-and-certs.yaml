@@ -1,0 +1,46 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-root-issuer
+  namespace: default
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: my-root-ca
+  namespace: default
+spec:
+  secretName: root-ca-secret
+  isCA: true
+  commonName: "MyOrg Root CA"
+  issuerRef:
+    name: selfsigned-root-issuer
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cluster-ca-issuer
+  namespace: default
+spec:
+  ca:
+    secretName: root-ca-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: service-a-cert
+  namespace: default
+spec:
+  secretName: service-a-tls
+  duration: 2160h    # 90d
+  renewBefore: 360h  # 15d
+  commonName: "service-a.default.svc.cluster.local"
+  dnsNames:
+    - service-a
+    - service-a.default.svc.cluster.local
+  issuerRef:
+    name: cluster-ca-issuer
+    kind: Issuer

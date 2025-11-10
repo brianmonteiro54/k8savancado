@@ -1,0 +1,22 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: worker-rabbitmq
+  namespace: keda-demo
+  labels:
+    app: worker
+spec:
+  scaleTargetRef:
+    name: worker
+  minReplicaCount: 0
+  maxReplicaCount: 10
+  pollingInterval: 15
+  cooldownPeriod: 60
+  triggers:
+  - type: rabbitmq
+    metadata:
+      queueName: orders
+      mode: QueueLength
+      value: "10"
+    authenticationRef:
+      name: rabbitmq-auth

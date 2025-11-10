@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: publisher
+  namespace: keda-demo
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: publisher
+        image: keda-demo/publisher:local
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: AMQP_ADDR
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-secret
+              key: connection
+        args: ["--count","200","--concurrency","20","--burst-delay-ms","50","--queue","orders"]
+  backoffLimit: 0

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mini-karpenter-rs
+  namespace: aula07
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mini-karpenter-rs
+  template:
+    metadata:
+      labels:
+        app: mini-karpenter-rs
+    spec:
+      serviceAccountName: mini-karpenter-rs
+      containers:
+      - name: controller
+        image: aula07/mini-karpenter-rs:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: RUST_LOG
+          value: info
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"

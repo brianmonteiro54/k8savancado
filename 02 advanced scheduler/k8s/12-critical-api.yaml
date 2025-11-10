@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: critical-api
+  namespace: aula02
+  labels: { app: critical }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: critical }
+  template:
+    metadata:
+      labels: { app: critical }
+    spec:
+      priorityClassName: high-priority
+      containers:
+        - name: app
+          image: aula02-scheduler-demo:demo
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8080 }]
+          env:
+            - name: POD_NAME
+              valueFrom: { fieldRef: { fieldPath: metadata.name } }
+            - name: NODE_NAME
+              valueFrom: { fieldRef: { fieldPath: spec.nodeName } }
+          resources:
+            requests:
+              cpu: "300m"
+              memory: "300Mi"
+            limits:
+              cpu: "1"
+              memory: "600Mi"
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            initialDelaySeconds: 2
+            periodSeconds: 5

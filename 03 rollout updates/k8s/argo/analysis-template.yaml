@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: slo-quantile-check
+spec:
+  args:
+    - name: error_rate_threshold
+    - name: p95_latency_threshold_seconds
+  metrics:
+    - name: dummy-ok
+      interval: 10s
+      count: 2
+      successCondition: result >= 0
+      provider:
+        prometheus:
+          address: http://prometheus-server.monitoring.svc.cluster.local:9090
+          query: 1

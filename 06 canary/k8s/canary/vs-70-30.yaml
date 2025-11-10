@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: versioned-echo-virtualservice
+spec:
+  hosts: ["versioned-echo"]
+  http:
+    - route:
+        - destination: { host: versioned-echo, subset: v1 }
+          weight: 70
+        - destination: { host: versioned-echo, subset: v2 }
+          weight: 30

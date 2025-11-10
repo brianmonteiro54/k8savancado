@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lowprio-filler
+  namespace: aula02
+  labels: { app: filler }
+spec:
+  replicas: 3
+  selector:
+    matchLabels: { app: filler }
+  template:
+    metadata:
+      labels: { app: filler }
+    spec:
+      priorityClassName: low-priority
+      containers:
+        - name: app
+          image: aula02-scheduler-demo:demo
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8080 }]
+          env:
+            - name: POD_NAME
+              valueFrom: { fieldRef: { fieldPath: metadata.name } }
+            - name: NODE_NAME
+              valueFrom: { fieldRef: { fieldPath: spec.nodeName } }
+          resources:
+            requests:
+              cpu: "400m"
+              memory: "400Mi"
+            limits:
+              cpu: "800m"
+              memory: "800Mi"
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
