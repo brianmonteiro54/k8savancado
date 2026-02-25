@@ -181,7 +181,6 @@ async fn unstable() -> impl IntoResponse {
     }
 }
 
-// Admin flips to demonstrate probes
 async fn flip_ready(State(state): State<AppState>, Query(p): Query<FlipParams>) -> impl IntoResponse {
     let v = p.value.unwrap_or(true);
     state.ready.store(v, Ordering::SeqCst);

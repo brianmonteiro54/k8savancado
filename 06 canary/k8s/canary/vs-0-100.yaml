@@ -7,6 +7,6 @@ spec:
   http:
     - route:
         - destination: { host: versioned-echo, subset: v1 }
-          weight: 0
-        - destination: { host: versioned-echo, subset: v2 }
           weight: 100
+        - destination: { host: versioned-echo, subset: v2 }
+          weight: 0
