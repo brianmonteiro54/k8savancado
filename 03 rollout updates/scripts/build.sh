@@ -43,7 +43,7 @@ Push to local registry (if used):
 
 Redeploy to cluster:
 	kubectl delete deployment myapp 2>/dev/null || true
-	kubectl apply -f "$ROOT/03 rollout updates/k8s/deployment-rolling.yaml"
+	kubectl apply -f "$ROOT/k8s/deployment-rolling.yaml"
 
 Force rollout (no spec change):
 	kubectl rollout restart deployment/myapp
@@ -72,4 +72,3 @@ else
 		exit 1
 	}
 fi
-INFO
