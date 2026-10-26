@@ -23,11 +23,11 @@ spec:
     spec:
       containers:
         - name: myapp
-          image: myorg/myapp:2.0.0
+          image: myorg/myapp:1.0.0
           imagePullPolicy: IfNotPresent
           env:
             - name: APP_VERSION
-              value: "2.0.0"
+              value: "1.0.0"
             - name: PORT
               value: "8080"
           ports:

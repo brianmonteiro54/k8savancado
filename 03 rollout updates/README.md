@@ -12,7 +12,7 @@ Este guia **didático e detalhado** descreve **cada passo** para instalar as dep
 | ---------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
 | **Docker**                   | Build e execução da imagem container da nossa app Rust.                               | Windows/macOS: **Docker Desktop**; Linux: `apt/yum` + `docker compose plugin`. |
 | **kubectl**                  | CLI oficial do Kubernetes para aplicar YAMLs e inspecionar recursos.                  | Binário oficial (curl/choco/brew).                                             |
-| **Kubernetes (Docker Desktop)** | Cluster local integrado ao Docker Desktop, usado para aplicar os manifests.          | Ative nas preferências do Docker Desktop (`Settings > Kubernetes`).            |
+| **Kubernetes (Docker Desktop)** | Cluster local integrado ao Docker Desktop, usado para aplicar os manifests.          | Ative em `Settings > Kubernetes` e escolha o provisionador **`kubeadm`** (veja o aviso na seção 3). |
 | **Rust toolchain**           | Compilar os binários `simulator` e `myapp`.                                           | `rustup` (instalador oficial).                                                 |
 | **(Opcional) Argo Rollouts** | Controlador para canário/blue-green/experimentos.                                     | Aplicar manifests do projeto Argo e (opcional) plugin `kubectl-argo-rollouts`. |
 
@@ -156,6 +156,18 @@ k8s-advanced-aula03/
 ---
 
 ## 3) Configurando o cluster local (Docker Desktop)
+
+> ⚠️ **Escolha o provisionador `kubeadm`, não o `kind`.**
+>
+> O diálogo *Create cluster* do Docker Desktop oferece dois tipos de cluster. Este módulo constrói a imagem localmente e aplica os manifests com `imagePullPolicy: IfNotPresent`, sem push para registry, então depende de o cluster usar o image store local do Docker. Pela [documentação do Docker Desktop](https://docs.docker.com/desktop/features/kubernetes/), isso vale para o `kubeadm` (*Works with Docker image store: Yes*) e não vale para o `kind` (*No*).
+>
+> Em cluster `kind`, o sintoma é `ImagePullBackOff` em todos os pods mesmo com a imagem presente no `docker images`, e o `kind load docker-image` não resolve, porque os containers de nó do Docker Desktop não ficam visíveis para o CLI do kind. Para saber qual provisionador você tem:
+>
+> ```bash
+> kubectl get nodes
+> ```
+>
+> Nó chamado `docker-desktop` é `kubeadm`. Nó chamado `desktop-control-plane` é `kind`: abra **Kubernetes > Edit cluster** e troque para `kubeadm`.
 
 ```bash
 scripts/docker-desktop-setup.sh
